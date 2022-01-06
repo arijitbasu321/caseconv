@@ -2,16 +2,16 @@
   "name": "changecase",
   "version": "1.0.1",
   "description": "This is a utility to switch back and forth between snake and camel case code",
-  "main": "src/cc.js",
+  "main": "src/ccase-main.js",
   "bin": {
-    "ccase": "bin/ccase.js"
+    "ccase": "bin/ccase-bin.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/arijitbasu321/changecase.git"
+    "url": "git+https://github.com/arijitbasu321/ccase.git"
   },
   "author": "Arijit Basu",
   "license": "ISC",

@@ -84,8 +84,6 @@ function c2s(word) {
 
 module.exports = {
     checkArgs,
-    // readInputFile,
-    // writeOutputFile,
     convert,
     s2c,
     c2s
