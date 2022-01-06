@@ -22,49 +22,39 @@ function checkArgs(args) {
     }
 }
 
-function readInputFile(file) {
+function convert(inputFileName, outputFileName, changeType) {
 
     try {
-        let data = fs.readFileSync(file, 'utf-8')
-        return data
+        let data = fs.readFileSync(inputFileName, 'utf-8')
+        let dataArray = data.split(/[\s,]+/)
+        dataArray.forEach(word => {
+            if(!word.includes('"'))
+            {
+                if(changeType == 'camel' && word.includes('_'))
+                {
+                    let modifiedWord = s2c(word)
+                    data = data.replace(word, modifiedWord)
+                }
+                else if(changeType == 'snake' && !word.includes('_')) 
+                {
+                    let modifiedWord = c2s(word)
+                    data = data.replace(word, modifiedWord)
+                }
+            }
+        })
+
+        fs.writeFileSync(outputFileName, data)
     }
     catch (err) {
-        console.log('Input file does not exist')
-        process.exit(1)
-    }
-    
-   
-
-}
-
-function writeOutputFile(fileName, data) {
-
-    fs.writeFileSync(fileName, data)
-
-}
-
-
-function convert(data, changeType) {
-
-    let dataArray = data.split(/[\s,]+/)
-
-    dataArray.forEach(word => {
-        if(!word.includes('"'))
+        if (err.code == 'ENOENT') 
         {
-            if(changeType == 'camel' && word.includes('_'))
-            {
-                let modifiedWord = s2c(word)
-                data = data.replace(word, modifiedWord)
-            }
-            else if(changeType == 'snake' && !word.includes('_')) 
-            {
-                let modifiedWord = c2s(word)
-                data = data.replace(word, modifiedWord)
-            }
+            console.log('Input file does not exit!')
         }
-    })
-
-    return data
+        else 
+        {
+            throw err;
+        }
+    }
 }
 
 function s2c(word) {
@@ -94,8 +84,8 @@ function c2s(word) {
 
 module.exports = {
     checkArgs,
-    readInputFile,
-    writeOutputFile,
+    // readInputFile,
+    // writeOutputFile,
     convert,
     s2c,
     c2s

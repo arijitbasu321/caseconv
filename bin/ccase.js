@@ -35,14 +35,6 @@ const args = require('yargs')
 //Check for vaild arguments
 cc.checkArgs(args)
 
+//Convert case
+cc.convert(args['input'], args['output'], args['type'])
 
-//read input file
-let inputData = cc.readInputFile(args['input'])
-
-
-//Convert file
-let outputData = cc.convert(inputData, args['type'])
-
-
-//write to output file
-cc.writeOutputFile( args['output'], outputData)
