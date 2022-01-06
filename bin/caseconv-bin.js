@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 //import modules
-const cc = require('../src/ccase-main.js')
+const cc = require('../src/caseconv-main.js')
 const package = require('../package.json')
 const args = require('yargs')
     .scriptName('ccase')
