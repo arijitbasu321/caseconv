@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-//import modules
 const cc = require('../src/caseconv-main.js')
 const package = require('../package.json')
 const args = require('yargs')
@@ -8,21 +7,21 @@ const args = require('yargs')
     .version(package.version)
     .usage('Usage: $0 --type [camel|snake] --input <filename> --output <filename>')
     .example('Exmple: ccase --type snake --input sample1.js --output sample2.js')
-    .option('t',{
+    .option('t', {
         alias: 'type',
         describe: 'Choose case type: camel | snake',
         demandOption: true,
         type: "string",
         nargs: 1
     })
-    .option('i',{
+    .option('i', {
         alias: 'input',
         describe: 'Input file name',
         demandOption: true,
         type: "string",
         nargs: 1
     })
-    .option('o',{
+    .option('o', {
         alias: 'output',
         describe: 'Output file name',
         demandOption: true,
@@ -31,10 +30,13 @@ const args = require('yargs')
     })
     .argv
 
-
-//Check for vaild arguments
 cc.checkArgs(args)
 
-//Convert case
-cc.convert(args['input'], args['output'], args['type'])
+let parameters = {
+    inputFileName: args.input,
+    outputFileName: args.output,
+    changeType: args.type
+}
+
+cc.convert(parameters)
 

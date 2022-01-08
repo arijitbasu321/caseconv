@@ -1,67 +1,33 @@
 const fs = require('fs')
+const allowedArgs = ['i', 'o', 't', 'type', 'input', 'output', '_', '$0']
+const supportedCase = ['snake', 'camel']
 
 function checkArgs(args) {
-
-    const allowedArgs = ['i', 'o', 't', 'type', 'input', 'output', '_', '$0']
-    const supportedCase = ['snake', 'camel']
-    
-    for(let arg in args) 
-    {
-        if(!allowedArgs.includes(arg))
-        {
+    for(let arg in args) {
+        if(!allowedArgs.includes(arg)){
             console.log(`Invalid argument ${arg}`)
             process.exit(1)
         }
     }
 
-
-    if(!supportedCase.includes(args['type']))
-    {
+    if(!supportedCase.includes(args['type'])){
         console.log(`Unsupported case ${args['type']}`)
         process.exit(1)
     }
 }
 
-function convert(inputFileName, outputFileName, changeType) {
+function isAlphabet(letter) {
+    return (letter.match(/[A-Z|a-z]/i)) ? true : false
+}
 
-    try {
-        let data = fs.readFileSync(inputFileName, 'utf-8')
-        let dataArray = data.split(/[\s,]+/)
-        dataArray.forEach(word => {
-            if(!word.includes('"'))
-            {
-                if(changeType == 'camel' && word.includes('_'))
-                {
-                    let modifiedWord = s2c(word)
-                    data = data.replace(word, modifiedWord)
-                }
-                else if(changeType == 'snake' && !word.includes('_')) 
-                {
-                    let modifiedWord = c2s(word)
-                    data = data.replace(word, modifiedWord)
-                }
-            }
-        })
-
-        fs.writeFileSync(outputFileName, data)
-    }
-    catch (err) {
-        if (err.code == 'ENOENT') 
-        {
-            console.log('Input file does not exit!')
-        }
-        else 
-        {
-            throw err;
-        }
-    }
+function isUpperCase(letter) {
+    return (letter == letter.toUpperCase()) ? true : false 
 }
 
 function s2c(word) {
-
     wordArray = word.split('_')
-    for(i=1;i<wordArray.length;i++)
-    {
+
+    for(i=1;i<wordArray.length;i++) {
         wordArray[i] = wordArray[i][0].toUpperCase() + wordArray[i].substring(1)
     }
 
@@ -69,12 +35,10 @@ function s2c(word) {
 }
 
 function c2s(word) {
-
     let wordArray = word.split('')
-    for(i=1;i<wordArray.length;i++)
-    {
-        if(wordArray[i] == wordArray[i].toUpperCase() && wordArray[i].match(/[A-Z|a-z]/i))
-        {
+
+    for(i=1;i<wordArray.length;i++) {
+        if(isAlphabet(wordArray[i]) && isUpperCase(wordArray[i])) {
             wordArray[i] = '_' + wordArray[i].toLowerCase()
         }
     }
@@ -82,9 +46,41 @@ function c2s(word) {
     return wordArray.join('')
 }
 
+function convert(params) {
+    try {
+        let data = fs.readFileSync(params.inputFileName, 'utf-8')
+        let dataArray = data.split(/[\s,]+/)
+        dataArray.pop('') //remove blank
+        
+        dataArray.forEach(word => {      
+            if(word.includes('"') || word.includes('-') || isUpperCase(word[0])) {
+                return false
+            }
+
+            if(params.changeType == 'camel' && word.includes('_')){
+                let modifiedWord = s2c(word)
+                data = data.replace(word, modifiedWord)
+            }
+
+            if(params.changeType == 'snake' && !word.includes('_')) {
+                let modifiedWord = c2s(word)
+                data = data.replace(word, modifiedWord)
+            }
+        })
+
+        fs.writeFileSync(params.outputFileName, data)
+    }
+    catch (err) {
+        if (err.code == 'ENOENT') {
+            console.error('Input file does not exit!')
+        }
+        else {
+            throw err;
+        }
+    }
+}
+
 module.exports = {
     checkArgs,
-    convert,
-    s2c,
-    c2s
+    convert
 }
